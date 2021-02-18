@@ -11,7 +11,7 @@ public class Computer {
     }
 
     // Dirty code :(
-    private boolean winCheckFromCoordinate(Table table, int y, int x) {
+    private boolean winCheckFromCoordinate(Table table, int y, int x, int numberOfContinuousCellToWin) {
         boolean verticalWinCheck = true;
         boolean horizontalWinCheck = true;
         boolean rightCrossWinCheck = true;
@@ -24,7 +24,7 @@ public class Computer {
 
         char[][] arr = table.getTableArray();
 
-        for (int k = 0; k < CaroGame.NUMBER_OF_CONTINUOUS_CELL_TO_WIN; k++) {
+        for (int k = 0; k < numberOfContinuousCellToWin; k++) {
             if (x + k < table.getSize() && arr[y][x + k] == arr[y][x])
                 horizontalContinuousCellCount++;
             if (y + k < table.getSize() && arr[y + k][x] == arr[y][x])
@@ -47,23 +47,23 @@ public class Computer {
                 return false;
         }
 
-        horizontalWinCheck = horizontalContinuousCellCount == CaroGame.NUMBER_OF_CONTINUOUS_CELL_TO_WIN;
-        verticalWinCheck = verticalContinuousCellCount == CaroGame.NUMBER_OF_CONTINUOUS_CELL_TO_WIN;
-        leftCrossWinCheck = leftCrossContinuousCellCount == CaroGame.NUMBER_OF_CONTINUOUS_CELL_TO_WIN;
-        rightCrossWinCheck = rightCrossContinuousCellCount == CaroGame.NUMBER_OF_CONTINUOUS_CELL_TO_WIN;
+        horizontalWinCheck = horizontalContinuousCellCount == numberOfContinuousCellToWin;
+        verticalWinCheck = verticalContinuousCellCount == numberOfContinuousCellToWin;
+        leftCrossWinCheck = leftCrossContinuousCellCount == numberOfContinuousCellToWin;
+        rightCrossWinCheck = rightCrossContinuousCellCount == numberOfContinuousCellToWin;
 
         return horizontalWinCheck || verticalWinCheck || rightCrossWinCheck || leftCrossWinCheck;
     }
 
-    public int scoreOfState(Table table) {
+    public int scoreOfState(Table table, int numberOfContinuousCellToWin) {
         int size = table.getSize();
         char[][] arr = table.getTableArray();
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (arr[i][j] == 'x' && winCheckFromCoordinate(table, i, j))
+                if (arr[i][j] == 'x' && winCheckFromCoordinate(table, i, j,numberOfContinuousCellToWin))
                     return CaroGame.LOSE_SCORE;
-                else if (arr[i][j] == 'o' && winCheckFromCoordinate(table, i, j))
+                else if (arr[i][j] == 'o' && winCheckFromCoordinate(table, i, j,numberOfContinuousCellToWin))
                     return CaroGame.WIN_SCORE;
             }
         }
@@ -81,15 +81,15 @@ public class Computer {
         return result;
     }
 
-    public int scoreOfStateWithHeight(Table table, int height, boolean isTurnOfPlayer) {
+    public int scoreOfStateWithHeight(Table table, int height, boolean isTurnOfPlayer, int numberOfContinuousCellToWin) {
         if (height == 1)
-            return scoreOfState(table);
+            return scoreOfState(table,numberOfContinuousCellToWin);
 
         if (table.isFullFilled())
-            return scoreOfState(table);
+            return scoreOfState(table,numberOfContinuousCellToWin);
 
-        if (scoreOfState(table) != CaroGame.DRAW_SCORE) {
-            int score = scoreOfState(table);
+        if (scoreOfState(table,numberOfContinuousCellToWin) != CaroGame.DRAW_SCORE) {
+            int score = scoreOfState(table,numberOfContinuousCellToWin);
             return score * multiplyFactorScoreForLeaf(table, height);
         }
 
@@ -101,7 +101,7 @@ public class Computer {
                 if (table.getTableArray()[i][j] == 'n') {
                     Table tempTable = new Table(table);
                     tempTable.setCell(i, j, isTurnOfPlayer);
-                    score += scoreOfStateWithHeight(tempTable, height - 1, !isTurnOfPlayer);
+                    score += scoreOfStateWithHeight(tempTable, height - 1, !isTurnOfPlayer,numberOfContinuousCellToWin);
                 }
             }
         }

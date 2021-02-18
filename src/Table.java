@@ -52,6 +52,7 @@ public class Table {
 
     public void setCell(int i, int j, boolean isTurnOfPlayer) {
         tableArray[i][j] = isTurnOfPlayer ? 'x' : 'o';
+        trimTable();
     }
 
     //Set margin for table
@@ -85,10 +86,10 @@ public class Table {
                 }
             }
         }
-        topMargin = topMargin > 0 ? topMargin - 1 : topMargin;
-        rightMargin = rightMargin < size - 1 ? rightMargin + 1 : rightMargin;
-        botMargin = botMargin < size - 1 ? botMargin + 1 : botMargin;
-        leftMargin = leftMargin > 0 ? leftMargin - 1 : leftMargin;
+        topMargin = topMargin -2 >= 0 ? topMargin - 2 : topMargin;
+        rightMargin = rightMargin < size - 2 ? rightMargin + 2 : rightMargin;
+        botMargin = botMargin < size - 2 ? botMargin + 2 : botMargin;
+        leftMargin = leftMargin -2 >= 0 ? leftMargin - 2 : leftMargin;
     }
 
     public int getSize() {

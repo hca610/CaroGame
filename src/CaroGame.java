@@ -6,15 +6,19 @@ public class CaroGame {
     public static final int WIN_SCORE = 1;
     public static final int LOSE_SCORE = -1;
 
-    public static final int SIZE_OF_BOARD = 5;
-    public static final int NUMBER_OF_CONTINUOUS_CELL_TO_WIN = 4;
-    public static final int HARD_LEVEL = 6;
+    public static final int SIZE_OF_BOARD = 8;
+    public static final int NUMBER_OF_CONTINUOUS_CELL_TO_WIN = 5;
+    public static final int HARD_LEVEL = 4;
 
     Table table;
+    int heightOfMinimaxAlgorithm;
+    int numberOfContinuousCellToWin;
 
-    public void initGame(int sizeOfBoard, int numberOfContinuousCellToWin) {
+    public void initGame(int sizeOfBoard, int numberOfContinuousCellToWin, int heightOfMinimaxAlgorithm) {
         table = new Table();
         table.createTable(sizeOfBoard);
+        this.heightOfMinimaxAlgorithm = heightOfMinimaxAlgorithm;
+        this.numberOfContinuousCellToWin = numberOfContinuousCellToWin;
     }
 
     public void computeNextStep(int height) {
@@ -32,7 +36,7 @@ public class CaroGame {
                 if (table.getTableArray()[i][j] == 'n') {
                     Table tempTable = new Table(table);
                     tempTable.setCell(i, j, false);
-                    int score = Computer.getInstance().scoreOfStateWithHeight(tempTable, height - 1, true);
+                    int score = Computer.getInstance().scoreOfStateWithHeight(tempTable, height - 1, true,numberOfContinuousCellToWin);
                     if (score > max_score) {
                         maxi_index = i;
                         maxj_index = j;
@@ -60,22 +64,21 @@ public class CaroGame {
     }
 
     public void resultAnnounce() {
-        if (Computer.getInstance().scoreOfState(table) == WIN_SCORE)
+        if (Computer.getInstance().scoreOfState(table,numberOfContinuousCellToWin) == WIN_SCORE)
             System.out.println("You lose!");
-        else if (Computer.getInstance().scoreOfState(table) == LOSE_SCORE)
+        else if (Computer.getInstance().scoreOfState(table,numberOfContinuousCellToWin) == LOSE_SCORE)
             System.out.println("You won!");
         else
             System.out.println("Draw!");
     }
 
     public void gameProcess() {
-        Computer computer = Computer.getInstance();
 
-        while (!table.isFullFilled() && Computer.getInstance().scoreOfState(table) == DRAW_SCORE) {
+        while (!table.isFullFilled() && Computer.getInstance().scoreOfState(table,numberOfContinuousCellToWin) == DRAW_SCORE) {
             getInput();
-            if (Computer.getInstance().scoreOfState(table) == LOSE_SCORE)
+            if (Computer.getInstance().scoreOfState(table,numberOfContinuousCellToWin) == LOSE_SCORE)
                 break;
-            computeNextStep(HARD_LEVEL);
+            computeNextStep(heightOfMinimaxAlgorithm);
             table.printTable();
         }
 
@@ -84,7 +87,7 @@ public class CaroGame {
 
     public static void main(String[] args) {
         CaroGame caroGame = new CaroGame();
-        caroGame.initGame(CaroGame.SIZE_OF_BOARD, CaroGame.NUMBER_OF_CONTINUOUS_CELL_TO_WIN);
+        caroGame.initGame(CaroGame.SIZE_OF_BOARD, CaroGame.NUMBER_OF_CONTINUOUS_CELL_TO_WIN, CaroGame.HARD_LEVEL);
         caroGame.gameProcess();
     }
 }
