@@ -98,7 +98,7 @@ public class Computer {
 
         for (int i = table.getTopMargin(); i <= table.getBotMargin(); i++) {
             for (int j = table.getLeftMargin(); j <= table.getRightMargin(); j++) {
-                if (table.getTableArray()[i][j] == 'n') {
+                if (table.getTableArray()[i][j] == '_') {
                     Table tempTable = new Table(table);
                     tempTable.setCell(i, j, isTurnOfPlayer);
                     score += scoreOfStateWithHeight(tempTable, height - 1, !isTurnOfPlayer,numberOfContinuousCellToWin);

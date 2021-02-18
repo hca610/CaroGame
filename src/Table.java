@@ -1,6 +1,8 @@
 import java.util.Arrays;
 
 public class Table {
+    final int MARGIN_WIDTH = 1;
+
     private int leftMargin = 0;
     private int rightMargin = 0;
     private int topMargin = 0;
@@ -27,7 +29,7 @@ public class Table {
         int count = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < tableArray[0].length; j++) {
-                if (tableArray[i][j] != 'n')
+                if (tableArray[i][j] == 'x' || tableArray[i][j] == 'o')
                     count++;
             }
         }
@@ -39,15 +41,27 @@ public class Table {
     }
 
     public void printTable() {
-        for (char[] chars : tableArray) {
+        System.out.print("  ");
+        for (int i = 0; i < size; i++) {
+            System.out.print((i + 1) + " ");
+        }
+        System.out.println();
+        int count = 1;
+        for (int i = 0; i < tableArray.length; i++) {
+            System.out.print(count + " ");
             for (int j = 0; j < tableArray[0].length; j++) {
-                if (chars[j] == 'n')
+                if (tableArray[i][j] == 'n')
                     System.out.print("_ ");
                 else
-                    System.out.print(chars[j] + " ");
+                    System.out.print(tableArray[i][j] + " ");
             }
-            System.out.println();
+            System.out.println(count++);
         }
+        System.out.print("  ");
+        for (int i = 0; i < size; i++) {
+            System.out.print((i + 1) + " ");
+        }
+        System.out.println();
     }
 
     public void setCell(int i, int j, boolean isTurnOfPlayer) {
@@ -64,7 +78,7 @@ public class Table {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++)
-                if (tableArray[i][j] != 'n') {
+                if (tableArray[i][j] == 'x' || tableArray[i][j] == 'o') {
                     if (j < leftMargin) {
                         leftMargin = j;
                     }
@@ -76,7 +90,7 @@ public class Table {
 
         for (int i = size - 1; i >= 0; i--) {
             for (int j = size - 1; j >= 0; j--) {
-                if (tableArray[i][j] != 'n') {
+                if (tableArray[i][j] == 'x' || tableArray[i][j] == 'o') {
                     if (j > rightMargin) {
                         rightMargin = j;
                     }
@@ -86,10 +100,26 @@ public class Table {
                 }
             }
         }
-        topMargin = topMargin -2 >= 0 ? topMargin - 2 : topMargin;
-        rightMargin = rightMargin < size - 2 ? rightMargin + 2 : rightMargin;
-        botMargin = botMargin < size - 2 ? botMargin + 2 : botMargin;
-        leftMargin = leftMargin -2 >= 0 ? leftMargin - 2 : leftMargin;
+        topMargin = topMargin - MARGIN_WIDTH >= 0 ? topMargin - MARGIN_WIDTH : topMargin;
+        rightMargin = rightMargin < size - MARGIN_WIDTH ? rightMargin + MARGIN_WIDTH : rightMargin;
+        botMargin = botMargin < size - MARGIN_WIDTH ? botMargin + MARGIN_WIDTH : botMargin;
+        leftMargin = leftMargin - MARGIN_WIDTH >= 0 ? leftMargin - MARGIN_WIDTH : leftMargin;
+        setAvailableMoveCellAfterTrim();
+    }
+
+    public void setAvailableMoveCellAfterTrim() {
+        for (int i = topMargin + 1; i < botMargin; i++) {
+            for (int j = leftMargin + 1; j < rightMargin; j++) {
+                if (tableArray[i][j] == 'x' || tableArray[i][j] == 'o') {
+                    for (int k = i-1; k <= i+1 ; k++) {
+                        for (int l = j-1; l <= j+1 ; l++) {
+                            if (tableArray[k][l] == 'n')
+                                tableArray[k][l] = '_';
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public int getSize() {
@@ -116,10 +146,6 @@ public class Table {
         return tableArray;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
-
     public Table() {
     }
 
@@ -137,11 +163,6 @@ public class Table {
         this.rightMargin = table.getRightMargin();
         this.topMargin = table.getTopMargin();
         this.botMargin = table.getBotMargin();
-        this.trimTable();
-    }
-
-    public void setTableArray(char[][] tableArray) {
-        this.tableArray = tableArray;
         this.trimTable();
     }
 }
