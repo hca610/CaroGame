@@ -50,10 +50,10 @@ public class Table {
         for (int i = 0; i < tableArray.length; i++) {
             System.out.print(count + " ");
             for (int j = 0; j < tableArray[0].length; j++) {
-                if (tableArray[i][j] == 'n')
-                    System.out.print("_ ");
-                else
-                    System.out.print(tableArray[i][j] + " ");
+//                if (tableArray[i][j] == 'n')
+//                    System.out.print("_ ");
+//                else
+                System.out.print(tableArray[i][j] + " ");
             }
             System.out.println(count++);
         }
@@ -108,13 +108,16 @@ public class Table {
     }
 
     public void setAvailableMoveCellAfterTrim() {
-        for (int i = topMargin + 1; i < botMargin; i++) {
-            for (int j = leftMargin + 1; j < rightMargin; j++) {
+        for (int i = topMargin; i <= botMargin; i++) {
+            for (int j = leftMargin; j <= rightMargin; j++) {
                 if (tableArray[i][j] == 'x' || tableArray[i][j] == 'o') {
-                    for (int k = i-1; k <= i+1 ; k++) {
-                        for (int l = j-1; l <= j+1 ; l++) {
-                            if (tableArray[k][l] == 'n')
-                                tableArray[k][l] = '_';
+                    for (int k = i - 1; k <= i + 1; k++) {
+                        for (int l = j - 1; l <= j + 1; l++) {
+                            try {
+                                if (tableArray[k][l] == 'n')
+                                    tableArray[k][l] = '_';
+                            } catch (ArrayIndexOutOfBoundsException ignored) {
+                            }
                         }
                     }
                 }

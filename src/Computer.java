@@ -61,9 +61,9 @@ public class Computer {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (arr[i][j] == 'x' && winCheckFromCoordinate(table, i, j,numberOfContinuousCellToWin))
+                if (arr[i][j] == 'x' && winCheckFromCoordinate(table, i, j, numberOfContinuousCellToWin))
                     return CaroGame.LOSE_SCORE;
-                else if (arr[i][j] == 'o' && winCheckFromCoordinate(table, i, j,numberOfContinuousCellToWin))
+                else if (arr[i][j] == 'o' && winCheckFromCoordinate(table, i, j, numberOfContinuousCellToWin))
                     return CaroGame.WIN_SCORE;
             }
         }
@@ -83,13 +83,13 @@ public class Computer {
 
     public int scoreOfStateWithHeight(Table table, int height, boolean isTurnOfPlayer, int numberOfContinuousCellToWin) {
         if (height == 1)
-            return scoreOfState(table,numberOfContinuousCellToWin);
+            return scoreOfState(table, numberOfContinuousCellToWin);
 
         if (table.isFullFilled())
-            return scoreOfState(table,numberOfContinuousCellToWin);
+            return scoreOfState(table, numberOfContinuousCellToWin);
 
-        if (scoreOfState(table,numberOfContinuousCellToWin) != CaroGame.DRAW_SCORE) {
-            int score = scoreOfState(table,numberOfContinuousCellToWin);
+        if (scoreOfState(table, numberOfContinuousCellToWin) != CaroGame.DRAW_SCORE) {
+            int score = scoreOfState(table, numberOfContinuousCellToWin);
             return score * multiplyFactorScoreForLeaf(table, height);
         }
 
@@ -101,7 +101,8 @@ public class Computer {
                 if (table.getTableArray()[i][j] == '_') {
                     Table tempTable = new Table(table);
                     tempTable.setCell(i, j, isTurnOfPlayer);
-                    score += scoreOfStateWithHeight(tempTable, height - 1, !isTurnOfPlayer,numberOfContinuousCellToWin);
+                    score += scoreOfStateWithHeight(tempTable, height - 1, !isTurnOfPlayer,
+                            numberOfContinuousCellToWin);
                 }
             }
         }

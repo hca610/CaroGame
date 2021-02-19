@@ -6,10 +6,10 @@ public class CaroGame {
 
     public static final int DRAW_SCORE = 0;
     public static final int WIN_SCORE = 1;
-    public static final int LOSE_SCORE = -2;
+    public static final int LOSE_SCORE = -1;
 
-    public static final int SIZE_OF_BOARD = 9;
-    public static final int NUMBER_OF_CONTINUOUS_CELL_TO_WIN = 6;
+    public static final int SIZE_OF_BOARD = 8;
+    public static final int NUMBER_OF_CONTINUOUS_CELL_TO_WIN = 4;
     public static final int HARD_LEVEL = 5;  // 5 is min hard level that player can see AI working
 
     Table table;
@@ -38,7 +38,9 @@ public class CaroGame {
                     Table tempTable = new Table(table);
                     tempTable.setCell(i, j, false);
                     int score = Computer.getInstance().scoreOfStateWithHeight(tempTable, height - 1,
-                            true, numberOfContinuousCellToWin);
+                            true, numberOfContinuousCellToWin)
+                            + bonusScoreIfDiagonallyWithPlayerCell(table.getTableArray(), i, j);
+
                     if (score > max_score) {
                         maxScorePositionVector = new Vector<>();
                         max_score = score;
@@ -54,10 +56,7 @@ public class CaroGame {
         int randomIndex = random.nextInt(maxScorePositionVector.size());
         if (randomIndex == maxScorePositionVector.size())
             randomIndex--;
-        System.out.println(randomIndex + " " +maxScorePositionVector.size());
-        for (int i = 0; i < maxScorePositionVector.size(); i++) {
-            maxScorePositionVector.get(i).print();
-        }
+
         int i_maxIndex = maxScorePositionVector.get(randomIndex).getyCoordinate();
         int j_maxIndex = maxScorePositionVector.get(randomIndex).getxCoordinate();
         table.setCell(i_maxIndex, j_maxIndex, false);
@@ -76,6 +75,30 @@ public class CaroGame {
             y = scanner.nextInt();
         }
         table.setCell(x - 1, y - 1, true);
+    }
+
+    private int bonusScoreIfDiagonallyWithPlayerCell(char[][] tableArray, int i, int j) {
+        try {
+            if (i > 0 && (tableArray[i - 1][j - 1] == 'x' || tableArray[i - 1][j + 1] == 'x'))
+                return 1;
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
+        try {
+            if (i < CaroGame.SIZE_OF_BOARD - 1 && (tableArray[i + 1][j - 1] == 'x' || tableArray[i + 1][j + 1] == 'x'))
+                return 1;
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
+        try {
+            if (j > 0 && (tableArray[i - 1][j - 1] == 'x' || tableArray[i + 1][j - 1] == 'x'))
+                return 1;
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
+        try {
+            if (j < CaroGame.SIZE_OF_BOARD - 1 && (tableArray[i + 1][j + 1] == 'x' || tableArray[i - 1][j + 1] == 'x'))
+                return 1;
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
+        return 0;
     }
 
     public void resultAnnounce() {
